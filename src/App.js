@@ -1,8 +1,18 @@
-import Board from "./componants/Board"
+import Board from "./components/Board/Board"
+import Toolbar from "./components/Toolbar";
+import BoardProvider from "./store/boardprovider"
+
+
 function App() {
   return (
-    
-        <Board/>
+        
+      <BoardProvider>
+          <Board/>
+          <Toolbar/>  
+      </BoardProvider>
+
+        
+
    
   );
 }

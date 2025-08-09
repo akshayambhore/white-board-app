@@ -1,0 +1,17 @@
+.toolbar-container {
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+}
+
+.toolItem {
+  padding: 10px;
+  cursor: pointer;
+  font-size: 24px;
+}
+
+.active {
+  background-color: lightblue;
+  border: 2px solid #000;
+  border-radius: 4px;
+}
