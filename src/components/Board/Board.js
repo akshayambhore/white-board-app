@@ -6,7 +6,7 @@ import BoardContext from "../../store/board-context";
 function Board()
 {
     const canvasRef = useRef();
-    const {elements, boardmousDownhandaler} = useContext(BoardContext);
+    const {elements, boardmousDownhandaler, boardmousmovehandler,boardmousuphandler} = useContext(BoardContext);
     useEffect(()=>
         {
             const canvas=canvasRef.current;
@@ -38,8 +38,15 @@ function Board()
                 boardmousDownhandaler(event);
 
             };
+        const handalmousmove=(event)=>
+            {
+                boardmousmovehandler(event);
+            }
+        const handalmousup=(event)=>{
+                 boardmousuphandler(event);
+            }
         return(
-            <canvas ref={canvasRef} onMouseDown={handalmousdown}/>
+            <canvas ref={canvasRef} onMouseDown={handalmousdown} onMouseMove={handalmousmove} onMouseUp={handalmousup}/>
         )
         
 }

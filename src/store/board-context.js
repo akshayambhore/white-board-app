@@ -4,6 +4,8 @@ const BoardContext =createContext(
     activetoolitem : "",
     elements: [],
     boardmousDownhandaler :() =>{},
+    boardmousmovehandler :()=>{},
+    boardmousuphandler :()=>{},
     handalactive :()=>{}
 
 
