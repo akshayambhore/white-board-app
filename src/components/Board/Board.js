@@ -13,7 +13,7 @@ function Board()
             canvas.width=window.innerWidth;
             canvas.height=window.innerHeight;
             
-        },[])
+        },[]) 
     useEffect(()=>
         {  
 

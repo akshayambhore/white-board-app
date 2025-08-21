@@ -1,4 +1,4 @@
-
+import TOOL_ITEMS from "../../utils/constants";
 import classNames from "classnames";
 import { useContext } from "react";
 import {
@@ -7,10 +7,10 @@ import {
   FaArrowRight,
   FaPaintBrush,
   FaEraser,
-  FaUndoAlt,
-  FaRedoAlt,
   FaFont,
-  FaDownload,
+//   FaUndoAlt,
+//   FaRedoAlt,
+//   FaDownload,
 } from "react-icons/fa";
 import{
 LuRectangleHorizontal 
@@ -26,16 +26,16 @@ function Toolbar ()
         <>
         <div className="toolbar-container">
 
-            <div className={classNames("toolItem",{active:activeicon==="A"})} onClick={()=>handalactive("A") }><FaSlash /></div>
-            <div className={classNames("toolItem",{active:activeicon==="B"})} onClick={()=>handalactive("B") }><LuRectangleHorizontal/></div>
-            <div className={classNames("toolItem",{active:activeicon==="C"})} onClick={()=>handalactive("C") }><FaRegCircle /></div>
-            <div className={classNames("toolItem",{active:activeicon==="D"})} onClick={()=>handalactive("D") }><FaArrowRight/></div>
-            <div className={classNames("toolItem",{active:activeicon==="E"})} onClick={()=>handalactive("E") }><FaPaintBrush /></div>
-            <div className={classNames("toolItem",{active:activeicon==="F"})} onClick={()=>handalactive("F") }><  FaEraser/></div>
-            <div className={classNames("toolItem",{active:activeicon==="G"})} onClick={()=>handalactive("G") }>< FaUndoAlt /></div> 
-            <div className={classNames("toolItem",{active:activeicon==="H"})} onClick={()=>handalactive("H") }>< FaRedoAlt /></div> 
-            <div className={classNames("toolItem",{active:activeicon==="I"})} onClick={()=>handalactive("I") }><FaFont/></div>
-            <div className={classNames("toolItem",{active:activeicon==="J"})} onClick={()=>handalactive("J") }><FaDownload /></div>
+            <div className={classNames("toolItem",{active:activeicon===TOOL_ITEMS.LINE})} onClick={()=>handalactive(TOOL_ITEMS.LINE) }><FaSlash /></div>
+            <div className={classNames("toolItem",{active:activeicon===TOOL_ITEMS.RECTANGLE})} onClick={()=>handalactive("B") }><LuRectangleHorizontal/></div>
+            <div className={classNames("toolItem",{active:activeicon===TOOL_ITEMS.CIRCLE})} onClick={()=>handalactive("C") }><FaRegCircle /></div>
+            <div className={classNames("toolItem",{active:activeicon===TOOL_ITEMS.ARROW})} onClick={()=>handalactive("D") }><FaArrowRight/></div>
+            <div className={classNames("toolItem",{active:activeicon===TOOL_ITEMS.BRUSH})} onClick={()=>handalactive("E") }><FaPaintBrush /></div>
+            <div className={classNames("toolItem",{active:activeicon===TOOL_ITEMS.ERASER})} onClick={()=>handalactive("F") }><  FaEraser/></div>
+            {/* <div className onClick={ undo }>< FaUndoAlt /></div> 
+            <div classNameonClick={ redo }>< FaRedoAlt /></div>  */}
+            <div className={classNames("toolItem",{active:activeicon==="TOOL_ITEMS.TEXT"})} onClick={()=>handalactive("I") }><FaFont/></div>
+            {/* <div onClick={()=>handaldawenload() }><FaDownload /></div> */}
         </div>
         </>
     )

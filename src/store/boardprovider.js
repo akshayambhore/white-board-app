@@ -3,6 +3,7 @@ import BoardContext from "./board-context";
 import rough from "roughjs/bin/rough"
 const gen=rough.generator();
 const boardReducer = (state, action) => {
+    
     switch (action.type) {
         case "change_tool":
             {
@@ -15,6 +16,11 @@ const boardReducer = (state, action) => {
 
         case ("Draw_Down"):
             {
+            if(!state.activetoolitem)
+            {
+                return state;
+                
+            }
                 const { clientx, clienty } = action.payload;
                 const newele =
                 {
@@ -29,13 +35,14 @@ const boardReducer = (state, action) => {
                 }
                 console.log(newele.roughele);
                 return {
-                    ...state,
+                    ...state,isDrawing:true,
                     elements: [...state.elements, newele]
 
                 }
+            
             }
         case ("Move_Down"): {
-            if(state.elements.length===0)
+            if(state.elements.length===0||!state.isDrawing)
                 {
                     return state;
 
@@ -52,6 +59,14 @@ const boardReducer = (state, action) => {
                 ...state,
                 elements:newele
             };
+        
+        }
+        case ("Move_up"):
+            {
+                return {
+                ...state,
+                isDrawing: false,
+            }
         }
 
         default:
@@ -61,7 +76,8 @@ const boardReducer = (state, action) => {
 }
 const initioalboardstate =
 {
-    activetoolitem: "A",
+    activetoolitem: null,
+    isDrawing:false,
     elements: []
 
 };
@@ -105,13 +121,23 @@ const BoardProvider = ({ children }) => {
                 }
             })
     }
+    const boardmousuphandler=(event)=>
+        {
+             dispatchboardaction(
+            {
+                type: "Move_up",
+              
+            })
+            
+        }
     const boardcontextvalue =
     {
         activetoolitem: boardstate.activetoolitem,
         elements: boardstate.elements,
         handalactive,
         boardmousDownhandaler,
-        boardmousmovehandler
+        boardmousmovehandler,
+        boardmousuphandler
 
     }
     return (
