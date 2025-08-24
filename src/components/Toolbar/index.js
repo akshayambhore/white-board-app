@@ -1,4 +1,4 @@
-import TOOL_ITEMS from "../../utils/constants";
+import TOOL_ITEMS from "../../constants";
 import classNames from "classnames";
 import { useContext } from "react";
 import {
@@ -27,8 +27,8 @@ function Toolbar ()
         <div className="toolbar-container">
 
             <div className={classNames("toolItem",{active:activeicon===TOOL_ITEMS.LINE})} onClick={()=>handalactive(TOOL_ITEMS.LINE) }><FaSlash /></div>
-            <div className={classNames("toolItem",{active:activeicon===TOOL_ITEMS.RECTANGLE})} onClick={()=>handalactive("B") }><LuRectangleHorizontal/></div>
-            <div className={classNames("toolItem",{active:activeicon===TOOL_ITEMS.CIRCLE})} onClick={()=>handalactive("C") }><FaRegCircle /></div>
+            <div className={classNames("toolItem",{active:activeicon===TOOL_ITEMS.RECTANGLE})} onClick={()=>handalactive(TOOL_ITEMS.RECTANGLE) }><LuRectangleHorizontal/></div>
+            <div className={classNames("toolItem",{active:activeicon===TOOL_ITEMS.CIRCLE})} onClick={()=>handalactive(TOOL_ITEMS.CIRCLE) }><FaRegCircle /></div>
             <div className={classNames("toolItem",{active:activeicon===TOOL_ITEMS.ARROW})} onClick={()=>handalactive("D") }><FaArrowRight/></div>
             <div className={classNames("toolItem",{active:activeicon===TOOL_ITEMS.BRUSH})} onClick={()=>handalactive("E") }><FaPaintBrush /></div>
             <div className={classNames("toolItem",{active:activeicon===TOOL_ITEMS.ERASER})} onClick={()=>handalactive("F") }><  FaEraser/></div>

@@ -1,9 +1,10 @@
-import React, { useReducer} from "react";
+import React, { useReducer } from "react";
 import BoardContext from "./board-context";
-import rough from "roughjs/bin/rough"
-const gen=rough.generator();
+
+import createElement from "../utils/element";
+
 const boardReducer = (state, action) => {
-    
+
     switch (action.type) {
         case "change_tool":
             {
@@ -16,58 +17,47 @@ const boardReducer = (state, action) => {
 
         case ("Draw_Down"):
             {
-            if(!state.activetoolitem)
-            {
-                return state;
-                
-            }
-                const { clientx, clienty } = action.payload;
-                const newele =
-                {
-                    id: state.elements.length,
-                    x1: clientx,
-                    y1: clienty,
-                    x2: clientx,
-                    y2: clienty,
-                    roughele: gen.line(clientx, clienty, clientx, clienty)
-
-
-                }
-                console.log(newele.roughele);
-                return {
-                    ...state,isDrawing:true,
-                    elements: [...state.elements, newele]
-
-                }
-            
-            }
-        case ("Move_Down"): {
-            if(state.elements.length===0||!state.isDrawing)
-                {
+                if (!state.activetoolitem) {
                     return state;
 
                 }
+                    const { clientx, clienty } = action.payload;
+
+                    const newele = createElement(state.elements.length, clientx, clienty, clientx, clienty, { type: state.activetoolitem })
+
+                    console.log(newele.roughele);
+                    return {
+                        ...state, isDrawing: true,
+                        elements: [...state.elements, newele]
+
+                    }
+                
+
+            }
+        case ("Move_Down"): {
+            if (state.elements.length === 0 || !state.isDrawing) {
+                return state;
+
+            }
             const { clientx, clienty } = action.payload;
-
-
             const newele = [...state.elements];
             const index = state.elements.length - 1;
-            newele[index].x2 = clientx;
-            newele[index].y2 = clienty;
-            newele[index].roughele = gen.line(newele[index].x1, newele[index].y1, clientx, clienty);
+            const { x1, y1 } = newele[index];
+            const ele = createElement(index, x1, y1, clientx, clienty, { type: state.activetoolitem })
+            newele[index] = ele;
             return {
                 ...state,
-                elements:newele
+                elements: newele
             };
-        
+
         }
         case ("Move_up"):
             {
                 return {
-                ...state,
-                isDrawing: false,
+                    ...state,
+                    isDrawing: false,
+                }
             }
-        }
 
         default:
             return state
@@ -77,7 +67,7 @@ const boardReducer = (state, action) => {
 const initioalboardstate =
 {
     activetoolitem: null,
-    isDrawing:false,
+    isDrawing: false,
     elements: []
 
 };
@@ -92,7 +82,7 @@ const BoardProvider = ({ children }) => {
                 tool,
             }
         })
-        // setactive(tool);
+        
     }
     const boardmousDownhandaler = (event) => {
         const clientx = event.clientX;
@@ -121,15 +111,14 @@ const BoardProvider = ({ children }) => {
                 }
             })
     }
-    const boardmousuphandler=(event)=>
-        {
-             dispatchboardaction(
+    const boardmousuphandler = (event) => {
+        dispatchboardaction(
             {
                 type: "Move_up",
-              
+
             })
-            
-        }
+
+    }
     const boardcontextvalue =
     {
         activetoolitem: boardstate.activetoolitem,
