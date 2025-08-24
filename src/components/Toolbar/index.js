@@ -29,7 +29,7 @@ function Toolbar ()
             <div className={classNames("toolItem",{active:activeicon===TOOL_ITEMS.LINE})} onClick={()=>handalactive(TOOL_ITEMS.LINE) }><FaSlash /></div>
             <div className={classNames("toolItem",{active:activeicon===TOOL_ITEMS.RECTANGLE})} onClick={()=>handalactive(TOOL_ITEMS.RECTANGLE) }><LuRectangleHorizontal/></div>
             <div className={classNames("toolItem",{active:activeicon===TOOL_ITEMS.CIRCLE})} onClick={()=>handalactive(TOOL_ITEMS.CIRCLE) }><FaRegCircle /></div>
-            <div className={classNames("toolItem",{active:activeicon===TOOL_ITEMS.ARROW})} onClick={()=>handalactive("D") }><FaArrowRight/></div>
+            <div className={classNames("toolItem",{active:activeicon===TOOL_ITEMS.ARROW})} onClick={()=>handalactive(TOOL_ITEMS.ARROW) }><FaArrowRight/></div>
             <div className={classNames("toolItem",{active:activeicon===TOOL_ITEMS.BRUSH})} onClick={()=>handalactive("E") }><FaPaintBrush /></div>
             <div className={classNames("toolItem",{active:activeicon===TOOL_ITEMS.ERASER})} onClick={()=>handalactive("F") }><  FaEraser/></div>
             {/* <div className onClick={ undo }>< FaUndoAlt /></div> 
