@@ -1,0 +1,12 @@
+.colore
+{
+    height: 10px;
+    width: 10px;
+}
+.colore-a
+{
+    height: 20px;
+    width: 10px;
+    border: solid black 2px;
+    
+}

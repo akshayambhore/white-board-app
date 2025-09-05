@@ -1,7 +1,8 @@
-import React, { useReducer } from "react";
+import React, {  useReducer } from "react";
 import BoardContext from "./board-context";
 
 import createElement from "../utils/element";
+
 
 const boardReducer = (state, action) => {
 
@@ -21,9 +22,9 @@ const boardReducer = (state, action) => {
                     return state;
 
                 }
-                    const { clientx, clienty } = action.payload;
+                    const { clientx, clienty,stroke,fill,size } = action.payload;
 
-                    const newele = createElement(state.elements.length, clientx, clienty, clientx, clienty, { type: state.activetoolitem })
+                    const newele = createElement(state.elements.length, clientx, clienty, clientx, clienty, { type: state.activetoolitem,stroke,fill,size })
 
                     console.log(newele.roughele);
                     return {
@@ -39,11 +40,11 @@ const boardReducer = (state, action) => {
                 return state;
 
             }
-            const { clientx, clienty } = action.payload;
+            const { clientx, clienty ,stroke,fill,size} = action.payload;
             const newele = [...state.elements];
             const index = state.elements.length - 1;
             const { x1, y1 } = newele[index];
-            const ele = createElement(index, x1, y1, clientx, clienty, { type: state.activetoolitem })
+            const ele = createElement(index, x1, y1, clientx, clienty, { type: state.activetoolitem ,stroke,fill,size})
             newele[index] = ele;
             return {
                 ...state,
@@ -73,6 +74,7 @@ const initioalboardstate =
 };
 const BoardProvider = ({ children }) => {
     const [boardstate, dispatchboardaction] = useReducer(boardReducer, initioalboardstate)
+    
 
     const handalactive = (tool) => {
         dispatchboardaction({
@@ -84,7 +86,7 @@ const BoardProvider = ({ children }) => {
         })
         
     }
-    const boardmousDownhandaler = (event) => {
+    const boardmousDownhandaler = (event,toolboxstate) => {
         const clientx = event.clientX;
         const clienty = event.clientY;
 
@@ -93,12 +95,12 @@ const BoardProvider = ({ children }) => {
                 type: "Draw_Down",
                 payload:
                 {
-                    clientx, clienty
+                    clientx, clienty,stroke:toolboxstate[boardstate.activetoolitem]?.stroke,fill:toolboxstate[boardstate.activetoolitem]?.fill,size:toolboxstate[boardstate.activetoolitem]?.size
                 }
             })
 
     }
-    const boardmousmovehandler = (event) => {
+    const boardmousmovehandler = (event,toolboxstate) => {
         const clientx = event.clientX;
         const clienty = event.clientY;
 
@@ -107,7 +109,8 @@ const BoardProvider = ({ children }) => {
                 type: "Move_Down",
                 payload:
                 {
-                    clientx, clienty
+                    clientx, clienty,stroke:toolboxstate[boardstate.activetoolitem]?.stroke,fill:toolboxstate[boardstate.activetoolitem]?.fill,size:toolboxstate[boardstate.activetoolitem]?.size
+               
                 }
             })
     }
