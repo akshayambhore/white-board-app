@@ -9,7 +9,7 @@ const Toolbox = () => {
     const strokecolore = toolboxstate[activetoolitem]?.stroke;
     const fillcolore = toolboxstate[activetoolitem]?.fill;
     const size = toolboxstate[activetoolitem]?.size;
-    console.log(activetoolitem);
+  
     return (
         <>
             <div className="container">

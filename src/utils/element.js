@@ -2,6 +2,7 @@
 import rough from "roughjs/bin/rough";
 import TOOL_ITEMS from "../constants";
 import { getArrowHead } from "./math";
+import getStroke from "perfect-freehand";
 const gen = rough.generator();
 const  createElement= (id,x1,y1,x2,y2,{type,stroke,fill,size}) =>{
   const newele =
@@ -10,7 +11,11 @@ const  createElement= (id,x1,y1,x2,y2,{type,stroke,fill,size}) =>{
     x1,
     y1,
     x2,
-    y2
+    y2,
+     type,
+    fill,
+    stroke,
+    size,
     
   };
   let options=
@@ -33,6 +38,14 @@ const  createElement= (id,x1,y1,x2,y2,{type,stroke,fill,size}) =>{
       }
   switch(type)
   {
+     case TOOL_ITEMS.BRUSH:
+      {
+        const brushElement = 
+        {id,
+          points: [{x:x1,y:y1}],
+          path: new Path2D(getSvgPathFromStroke(getStroke([{ x: x1, y: y1 }]))),type,stroke};
+        return brushElement;
+      }
     case TOOL_ITEMS.LINE:
       {
         newele.roughele=gen.line(x1, y1, x2 ,y2,options)
@@ -71,3 +84,19 @@ const  createElement= (id,x1,y1,x2,y2,{type,stroke,fill,size}) =>{
 
 
 export default createElement;
+
+export const getSvgPathFromStroke = (stroke) => {
+  if (!stroke.length) return "";
+
+  const d = stroke.reduce(
+    (acc, [x0, y0], i, arr) => {
+      const [x1, y1] = arr[(i + 1) % arr.length];
+      acc.push(x0, y0, (x0 + x1) / 2, (y0 + y1) / 2);
+      return acc;
+    },
+    ["M", ...stroke[0], "Q"]
+  );
+
+  d.push("Z");
+  return d.join(" ");
+};

@@ -1,55 +1,69 @@
-import { useRef, useLayoutEffect,useEffect, useContext   } from "react";
+import { useRef, useLayoutEffect, useEffect, useContext } from "react";
 import rough from "roughjs";
 import BoardContext from "../../store/board-context";
 import toolboxcontext from "../../store/toolbox-context";
+import TOOL_ITEMS from "../../constants";
 
 
-function Board()
-{
+
+function Board() {
     const canvasRef = useRef();
-    const {elements, boardmousDownhandaler, boardmousmovehandler,boardmousuphandler} = useContext(BoardContext);
-    const {toolboxstate}=useContext(toolboxcontext);
-    useEffect(()=>
-        {
-            const canvas=canvasRef.current;
-            canvas.width=window.innerWidth;
-            canvas.height=window.innerHeight;
-            
-        },[]) 
-        useLayoutEffect(()=>
-        {  
+    const { elements, boardmousDownhandaler, boardmousmovehandler, boardmousuphandler } = useContext(BoardContext);
+    const { toolboxstate } = useContext(toolboxcontext);
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
 
-            const canvas=canvasRef.current;
-            const context = canvas.getContext("2d");
-            const roughCanvas=rough.canvas(canvas);
-            context.save();
-            // let gearetor=roughCanvas.generator;
-            // let rec1=gearetor.rectangle(100,100,100,100);
-            // roughCanvas.draw(rec1);
-            elements.forEach(element=>
-                {
-                    roughCanvas.draw(element.roughele)
-                })
-            return()=>{
-                context.clearRect(0,0,canvas.width,canvas.height);
-            };
-        },[elements])
-        const handalmousdown =(event)=>
-            {
-              
-                boardmousDownhandaler(event,toolboxstate);
+    }, [])
+    useLayoutEffect(() => {
 
-            };
-        const handalmousmove=(event)=>
-            {
-                boardmousmovehandler(event,toolboxstate);
+        const canvas = canvasRef.current;
+        const context = canvas.getContext("2d");
+        const roughCanvas = rough.canvas(canvas);
+        context.save();
+        // let gearetor=roughCanvas.generator;
+        // let rec1=gearetor.rectangle(100,100,100,100);
+        // roughCanvas.draw(rec1);
+
+        elements.forEach(element => {
+            switch (element.type) {
+                case TOOL_ITEMS.LINE:
+                case TOOL_ITEMS.RECTANGLE:
+                case TOOL_ITEMS.CIRCLE:
+                case TOOL_ITEMS.ARROW:
+                    roughCanvas.draw(element.roughele);
+                    break;
+                case TOOL_ITEMS.BRUSH:
+                    context.fillStyle = element.stroke;
+                    context.fill(element.path);
+                    context.restore();
+                    break;
+                default:
+                    
+                    throw new Error("Type not recog");
+
             }
-        const handalmousup=(event)=>{
-                 boardmousuphandler(event,toolboxstate);
-            }
-        return(
-            <canvas ref={canvasRef} onMouseDown={handalmousdown} onMouseMove={handalmousmove} onMouseUp={handalmousup}/>
-        )
-        
+
+        })
+        return () => {
+            context.clearRect(0, 0, canvas.width, canvas.height);
+        };
+    }, [elements])
+    const handalmousdown = (event) => {
+
+        boardmousDownhandaler(event, toolboxstate);
+
+    };
+    const handalmousmove = (event) => {
+        boardmousmovehandler(event, toolboxstate);
+    }
+    const handalmousup = (event) => {
+        boardmousuphandler(event, toolboxstate);
+    }
+    return (
+        <canvas ref={canvasRef} onMouseDown={handalmousdown} onMouseMove={handalmousmove} onMouseUp={handalmousup} />
+    )
+
 }
 export default Board;
