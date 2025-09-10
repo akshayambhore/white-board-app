@@ -6,7 +6,7 @@ import {
   FaRegCircle,
   FaArrowRight,
   FaPaintBrush,
-//   FaEraser,
+  FaEraser,
 //   FaFont,
 //   FaUndoAlt,
 //   FaRedoAlt,
@@ -31,7 +31,7 @@ function Toolbar ()
             <div className={classNames("toolItem",{active:activeicon===TOOL_ITEMS.CIRCLE})} onClick={()=>handalactive(TOOL_ITEMS.CIRCLE) }><FaRegCircle /></div>
             <div className={classNames("toolItem",{active:activeicon===TOOL_ITEMS.ARROW})} onClick={()=>handalactive(TOOL_ITEMS.ARROW) }><FaArrowRight/></div>
             <div className={classNames("toolItem",{active:activeicon===TOOL_ITEMS.BRUSH})} onClick={()=>handalactive(TOOL_ITEMS.BRUSH) }><FaPaintBrush /></div>
-            {/* <div className={classNames("toolItem",{active:activeicon===TOOL_ITEMS.ERASER})} onClick={()=>handalactive("F") }><  FaEraser/></div> */}
+            <div className={classNames("toolItem",{active:activeicon===TOOL_ITEMS.ERASER})} onClick={()=>handalactive(TOOL_ITEMS.ERASER) }><  FaEraser/></div>
             {/* <div className onClick={ undo }>< FaUndoAlt /></div> 
             <div classNameonClick={ redo }>< FaRedoAlt /></div>  */}
             {/* <div className={classNames("toolItem",{active:activeicon==="TOOL_ITEMS.TEXT"})} onClick={()=>handalactive("I") }><FaFont/></div> */}

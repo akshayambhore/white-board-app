@@ -5,7 +5,6 @@ import toolboxcontext from "../../store/toolbox-context";
 import TOOL_ITEMS from "../../constants";
 
 
-
 function Board() {
     const canvasRef = useRef();
     const { elements, boardmousDownhandaler, boardmousmovehandler, boardmousuphandler } = useContext(BoardContext);
@@ -37,7 +36,7 @@ function Board() {
                 case TOOL_ITEMS.BRUSH:
                     context.fillStyle = element.stroke;
                     context.fill(element.path);
-                    context.restore();
+                   
                     break;
                 default:
                     
@@ -46,20 +45,21 @@ function Board() {
             }
 
         })
+         context.restore();
         return () => {
             context.clearRect(0, 0, canvas.width, canvas.height);
         };
     }, [elements])
     const handalmousdown = (event) => {
 
-        boardmousDownhandaler(event, toolboxstate);
+        boardmousDownhandaler(event, toolboxstate,canvasRef.current);
 
     };
     const handalmousmove = (event) => {
-        boardmousmovehandler(event, toolboxstate);
+        boardmousmovehandler(event, toolboxstate,canvasRef.current);
     }
-    const handalmousup = (event) => {
-        boardmousuphandler(event, toolboxstate);
+    const handalmousup = () => {
+        boardmousuphandler();
     }
     return (
         <canvas ref={canvasRef} onMouseDown={handalmousdown} onMouseMove={handalmousmove} onMouseUp={handalmousup} />

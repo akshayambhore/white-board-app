@@ -3,6 +3,7 @@ import rough from "roughjs/bin/rough";
 import TOOL_ITEMS from "../constants";
 import { getArrowHead } from "./math";
 import getStroke from "perfect-freehand";
+import { isPointCloseToLine } from "./math";
 const gen = rough.generator();
 const  createElement= (id,x1,y1,x2,y2,{type,stroke,fill,size}) =>{
   const newele =
@@ -12,7 +13,7 @@ const  createElement= (id,x1,y1,x2,y2,{type,stroke,fill,size}) =>{
     y1,
     x2,
     y2,
-     type,
+    type,
     fill,
     stroke,
     size,
@@ -82,6 +83,56 @@ const  createElement= (id,x1,y1,x2,y2,{type,stroke,fill,size}) =>{
 
 
 
+
+export const isPointNear = (element, pointX, pointY,canvas) => {
+  const { x1, y1, x2, y2, type } = element;
+  console.log("sdrrts");
+  // const canves = document.getElementById("canvas");
+  const context=canvas.getContext("2d");
+  switch (type) {
+    case TOOL_ITEMS.LINE:
+    case TOOL_ITEMS.ARROW:
+      return isPointCloseToLine(x1, y1, x2, y2, pointX, pointY);
+    case TOOL_ITEMS.RECTANGLE:
+    case TOOL_ITEMS.CIRCLE:
+      return (
+        isPointCloseToLine(x1, y1, x2, y1, pointX, pointY) ||
+        isPointCloseToLine(x2, y1, x2, y2, pointX, pointY) ||
+        isPointCloseToLine(x2, y2, x1, y2, pointX, pointY) ||
+        isPointCloseToLine(x1, y2, x1, y1, pointX, pointY)
+      );
+    case TOOL_ITEMS.BRUSH:
+      return context.isPointInPath(element.path, pointX, pointY);
+    case TOOL_ITEMS.TEXT:
+      context.font = `${element.size}px Caveat`;
+      context.fillStyle = element.stroke;
+      const textWidth = context.measureText(element.text).width;
+      const textHeight = parseInt(element.size);
+      context.restore();
+      return (
+        isPointCloseToLine(x1, y1, x1 + textWidth, y1, pointX, pointY) ||
+        isPointCloseToLine(
+          x1 + textWidth,
+          y1,
+          x1 + textWidth,
+          y1 + textHeight,
+          pointX,
+          pointY
+        ) ||
+        isPointCloseToLine(
+          x1 + textWidth,
+          y1 + textHeight,
+          x1,
+          y1 + textHeight,
+          pointX,
+          pointY
+        ) ||
+        isPointCloseToLine(x1, y1 + textHeight, x1, y1, pointX, pointY)
+      );
+    default:
+      throw new Error("Type not recognized");
+  }
+};
 
 export default createElement;
 

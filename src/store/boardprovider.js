@@ -3,14 +3,16 @@ import BoardContext from "./board-context";
 import getStroke from "perfect-freehand";
 import { getSvgPathFromStroke } from "../utils/element";
 import createElement from "../utils/element";
-import TOOL_ITEMS from "../constants";
+import { isPointNear } from "../utils/element";
+import TOOL_ITEMS, { BOARD_ACTIONS, TOOL_ACTION_TYPES } from "../constants";
+
 
 
 const boardReducer = (state, action) => {
-
+    
     switch (action.type) {
-        case "change_tool":
-            {
+        case BOARD_ACTIONS.CHANGE_TOOL:
+              {
                 return {
                     ...state,
                     activetoolitem: action.payload.tool
@@ -18,7 +20,17 @@ const boardReducer = (state, action) => {
                 }
             }
 
-        case ("Draw_Down"):
+            
+        case BOARD_ACTIONS.CHANGE_ACTION_TYPE:
+            {
+               
+                return {
+                ...state,
+                toolActionType: action.payload.actionType,
+                };
+            }
+
+        case  BOARD_ACTIONS.DRAW_DOWN:
             {
                 if (!state.activetoolitem) {
                     return state;
@@ -30,21 +42,22 @@ const boardReducer = (state, action) => {
                 console.log(newele.type);
 
                 return {
-                    ...state, isDrawing: true,
+                    ...state,  toolActionType: state.activetoolitem===TOOL_ITEMS.ERASER?TOOL_ACTION_TYPES.ERASING:TOOL_ACTION_TYPES.DRAWING,
                     elements: [...state.elements, newele]
 
                 }
 
 
             }
-        case ("Draw_Move"): {
-            if (state.elements.length === 0 || !state.isDrawing) {
+       case BOARD_ACTIONS.DRAW_MOVE: {
+            if (state.elements.length === 0||state.toolActionType=== TOOL_ACTION_TYPES.NONE) {
                 return state;
 
             }
             const { clientx, clienty, stroke, fill, size } = action.payload;
             const newele = [...state.elements];
             const index = state.elements.length - 1;
+            console.log(state.toolActionType)
             const { type } = newele[index]
             switch (type) {
                 case (TOOL_ITEMS.ARROW):
@@ -70,12 +83,17 @@ const boardReducer = (state, action) => {
             }
 
         }
-        case ("Draw_up"):
+       
+        case BOARD_ACTIONS.ERASE:
             {
-                return {
-                    ...state,
-                    isDrawing: false,
-                }
+                const {clientx , clienty,canvas}=action.payload;
+                let newelements=[...state.elements]
+                newelements=newelements.filter((element)=>
+                    {
+                        return !isPointNear(element,clientx,clienty,canvas);
+                    })
+                return {...state,elements:newelements}
+
             }
 
         default:
@@ -83,20 +101,19 @@ const boardReducer = (state, action) => {
 
     }
 }
-const initioalboardstate =
-{
+const initioalboardstate = {
     activetoolitem: null,
-    isDrawing: false,
+    toolActionType: TOOL_ACTION_TYPES.NONE,
     elements: []
-
 };
+
 const BoardProvider = ({ children }) => {
     const [boardstate, dispatchboardaction] = useReducer(boardReducer, initioalboardstate)
 
 
     const handalactive = (tool) => {
         dispatchboardaction({
-            type: "change_tool",
+            type: BOARD_ACTIONS.CHANGE_TOOL,
             payload:
             {
                 tool,
@@ -104,13 +121,25 @@ const BoardProvider = ({ children }) => {
         })
 
     }
-    const boardmousDownhandaler = (event, toolboxstate) => {
+    const boardmousDownhandaler = (event, toolboxstate,canvas) => {
         const clientx = event.clientX;
         const clienty = event.clientY;
+        if(boardstate.activetoolitem===TOOL_ITEMS.ERASER)
+            {
+                dispatchboardaction(
+                {
+                    type: BOARD_ACTIONS.CHANGE_ACTION_TYPE,
+                    payload:
+                    {
+                        actionType:TOOL_ACTION_TYPES.ERASING
+                    }
+                })
+                return
 
+            }
         dispatchboardaction(
             {
-                type: "Draw_Down",
+                type: BOARD_ACTIONS.DRAW_DOWN,
                 payload:
                 {
                     clientx, clienty, stroke: toolboxstate[boardstate.activetoolitem]?.stroke, fill: toolboxstate[boardstate.activetoolitem]?.fill, size: toolboxstate[boardstate.activetoolitem]?.size
@@ -118,25 +147,45 @@ const BoardProvider = ({ children }) => {
             })
 
     }
-    const boardmousmovehandler = (event, toolboxstate) => {
+    const boardmousmovehandler = (event, toolboxstate,canvas) => {
         const clientx = event.clientX;
         const clienty = event.clientY;
-
-        dispatchboardaction(
+        if(boardstate.toolActionType===TOOL_ACTION_TYPES.DRAWING)
+        {
+             dispatchboardaction(
             {
-                type: "Draw_Move",
+                type: BOARD_ACTIONS.DRAW_MOVE,
+               
                 payload:
                 {
                     clientx, clienty, stroke: toolboxstate[boardstate.activetoolitem]?.stroke, fill: toolboxstate[boardstate.activetoolitem]?.fill, size: toolboxstate[boardstate.activetoolitem]?.size
 
                 }
+                
             })
+            return
+        }
+        else if (boardstate.toolActionType===TOOL_ACTION_TYPES.ERASING)
+            {
+                dispatchboardaction(
+                {
+                    type: BOARD_ACTIONS.ERASE,
+                
+                    payload:
+                    {
+                       clientx, clienty,canvas
+                    }
+                })
+            }
+       
     }
     const boardmousuphandler = (event) => {
         dispatchboardaction(
             {
-                type: "Draw_up",
-
+                type:BOARD_ACTIONS.CHANGE_ACTION_TYPE,
+                payload:{ 
+                toolActionType:TOOL_ACTION_TYPES.NONE
+                }
             })
 
     }
