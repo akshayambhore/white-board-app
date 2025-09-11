@@ -7,9 +7,9 @@ import {
   FaArrowRight,
   FaPaintBrush,
   FaEraser,
-//   FaFont,
-//   FaUndoAlt,
-//   FaRedoAlt,
+  FaFont,
+  FaUndoAlt,
+  FaRedoAlt,
 //   FaDownload,
 } from "react-icons/fa";
 import{
@@ -19,7 +19,7 @@ import "./toolbar.css";
 import BoardContext from "../../store/board-context";
 function Toolbar ()
 {
-    const {activeicon, handalactive}=useContext(BoardContext);
+    const {activeicon, handalactive,undo,redo}=useContext(BoardContext);
 
 
     return(
@@ -32,9 +32,9 @@ function Toolbar ()
             <div className={classNames("toolItem",{active:activeicon===TOOL_ITEMS.ARROW})} onClick={()=>handalactive(TOOL_ITEMS.ARROW) }><FaArrowRight/></div>
             <div className={classNames("toolItem",{active:activeicon===TOOL_ITEMS.BRUSH})} onClick={()=>handalactive(TOOL_ITEMS.BRUSH) }><FaPaintBrush /></div>
             <div className={classNames("toolItem",{active:activeicon===TOOL_ITEMS.ERASER})} onClick={()=>handalactive(TOOL_ITEMS.ERASER) }><  FaEraser/></div>
-            {/* <div className onClick={ undo }>< FaUndoAlt /></div> 
-            <div classNameonClick={ redo }>< FaRedoAlt /></div>  */}
-            {/* <div className={classNames("toolItem",{active:activeicon==="TOOL_ITEMS.TEXT"})} onClick={()=>handalactive("I") }><FaFont/></div> */}
+            <div className={classNames("toolItem",{active:activeicon===TOOL_ITEMS.TEXT})} onClick={()=>handalactive(TOOL_ITEMS.TEXT) }><FaFont/></div>
+            <div onClick={ undo }>< FaUndoAlt /></div> 
+            <div onClick={ redo }>< FaRedoAlt /></div> 
             {/* <div onClick={()=>handaldawenload() }><FaDownload /></div> */}
         </div>
         </>

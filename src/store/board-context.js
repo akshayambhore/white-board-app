@@ -6,6 +6,8 @@ const BoardContext =createContext(
     activetoolitem: null,
     toolActionType: TOOL_ACTION_TYPES.NONE,
     elements: [],
+    history:[[]],
+    index:0,
 
     boardmousDownhandaler :() =>{},
     boardmousmovehandler :()=>{},

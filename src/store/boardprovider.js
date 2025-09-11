@@ -7,12 +7,11 @@ import { isPointNear } from "../utils/element";
 import TOOL_ITEMS, { BOARD_ACTIONS, TOOL_ACTION_TYPES } from "../constants";
 
 
-
 const boardReducer = (state, action) => {
-    
+
     switch (action.type) {
         case BOARD_ACTIONS.CHANGE_TOOL:
-              {
+            {
                 return {
                     ...state,
                     activetoolitem: action.payload.tool
@@ -20,17 +19,17 @@ const boardReducer = (state, action) => {
                 }
             }
 
-            
+
         case BOARD_ACTIONS.CHANGE_ACTION_TYPE:
             {
-               
+
                 return {
-                ...state,
-                toolActionType: action.payload.actionType,
+                    ...state,
+                    toolActionType: action.payload.actionType,
                 };
             }
 
-        case  BOARD_ACTIONS.DRAW_DOWN:
+        case BOARD_ACTIONS.DRAW_DOWN:
             {
                 if (!state.activetoolitem) {
                     return state;
@@ -42,15 +41,16 @@ const boardReducer = (state, action) => {
                 console.log(newele.type);
 
                 return {
-                    ...state,  toolActionType: state.activetoolitem===TOOL_ITEMS.ERASER?TOOL_ACTION_TYPES.ERASING:TOOL_ACTION_TYPES.DRAWING,
+                    ...state, toolActionType: state.activetoolitem === TOOL_ITEMS.TEXT ? TOOL_ACTION_TYPES.WRITING : TOOL_ACTION_TYPES.DRAWING,
                     elements: [...state.elements, newele]
 
                 }
 
 
             }
-       case BOARD_ACTIONS.DRAW_MOVE: {
-            if (state.elements.length === 0||state.toolActionType=== TOOL_ACTION_TYPES.NONE) {
+        case BOARD_ACTIONS.DRAW_MOVE: {
+            if (state.toolActionType === TOOL_ACTION_TYPES.WRITING) return;
+            if (state.elements.length === 0 || state.toolActionType === TOOL_ACTION_TYPES.NONE) {
                 return state;
 
             }
@@ -78,24 +78,58 @@ const boardReducer = (state, action) => {
                     newele[index].path = new Path2D(getSvgPathFromStroke(getStroke(newele[index].points)))
                     return { ...state, elements: newele }
                 }
+               
                 default:
                     throw new Error("Type not recognized");
             }
 
         }
-       
+
         case BOARD_ACTIONS.ERASE:
             {
-                const {clientx , clienty,canvas}=action.payload;
-                let newelements=[...state.elements]
-                newelements=newelements.filter((element)=>
-                    {
-                        return !isPointNear(element,clientx,clienty,canvas);
-                    })
-                return {...state,elements:newelements}
+                const { clientx, clienty, canvas } = action.payload;
+                let newelements = [...state.elements]
+                newelements = newelements.filter((element) => {
+                    return !isPointNear(element, clientx, clienty, canvas);
+                })
+                return { ...state, elements: newelements }
 
             }
+        case BOARD_ACTIONS.DRAW_UP:
+            {
+                const elementscopy = [...state.elements];
+                const newhistory = state.history.slice(0, state.index + 1)
+                newhistory.push(elementscopy)
+                return {
+                    ...state,
+                    history: newhistory,
+                    index: state.index + 1,
+                }
+            }
+             case (BOARD_ACTIONS.UNDO):
+                    {
 
+                        if (state.index <= 0) {
+                            return state
+                        }
+                        return {
+                            ...state,
+                            elements: state.history[state.index - 1],
+                            index: state.index - 1,
+                        }
+
+                    }
+                case (BOARD_ACTIONS.REDO):
+                    {
+                        if (state.index >= state.history.length - 1) {
+                            return state
+                        }
+                        return {
+                            ...state,
+                            elements: state.history[state.index + 1],
+                            index: state.index + 1,
+                        }
+                    }
         default:
             return state
 
@@ -104,7 +138,9 @@ const boardReducer = (state, action) => {
 const initioalboardstate = {
     activetoolitem: null,
     toolActionType: TOOL_ACTION_TYPES.NONE,
-    elements: []
+    elements: [],
+    history: [[]],
+    index: 0,
 };
 
 const BoardProvider = ({ children }) => {
@@ -121,22 +157,21 @@ const BoardProvider = ({ children }) => {
         })
 
     }
-    const boardmousDownhandaler = (event, toolboxstate,canvas) => {
+    const boardmousDownhandaler = (event, toolboxstate, canvas) => {
         const clientx = event.clientX;
         const clienty = event.clientY;
-        if(boardstate.activetoolitem===TOOL_ITEMS.ERASER)
-            {
-                dispatchboardaction(
+        if (boardstate.activetoolitem === TOOL_ITEMS.ERASER) {
+            dispatchboardaction(
                 {
                     type: BOARD_ACTIONS.CHANGE_ACTION_TYPE,
                     payload:
                     {
-                        actionType:TOOL_ACTION_TYPES.ERASING
+                        actionType: TOOL_ACTION_TYPES.ERASING
                     }
                 })
-                return
+            return
 
-            }
+        }
         dispatchboardaction(
             {
                 type: BOARD_ACTIONS.DRAW_DOWN,
@@ -147,48 +182,72 @@ const BoardProvider = ({ children }) => {
             })
 
     }
-    const boardmousmovehandler = (event, toolboxstate,canvas) => {
+    const boardmousmovehandler = (event, toolboxstate, canvas) => {
+        if (boardstate.toolActionType === TOOL_ACTION_TYPES.WRITING) return;
+
         const clientx = event.clientX;
         const clienty = event.clientY;
-        if(boardstate.toolActionType===TOOL_ACTION_TYPES.DRAWING)
-        {
-             dispatchboardaction(
-            {
-                type: BOARD_ACTIONS.DRAW_MOVE,
-               
-                payload:
+        if (boardstate.toolActionType === TOOL_ACTION_TYPES.DRAWING) {
+            dispatchboardaction(
                 {
-                    clientx, clienty, stroke: toolboxstate[boardstate.activetoolitem]?.stroke, fill: toolboxstate[boardstate.activetoolitem]?.fill, size: toolboxstate[boardstate.activetoolitem]?.size
+                    type: BOARD_ACTIONS.DRAW_MOVE,
 
-                }
-                
-            })
-            return
-        }
-        else if (boardstate.toolActionType===TOOL_ACTION_TYPES.ERASING)
-            {
-                dispatchboardaction(
-                {
-                    type: BOARD_ACTIONS.ERASE,
-                
                     payload:
                     {
-                       clientx, clienty,canvas
+                        clientx, clienty, stroke: toolboxstate[boardstate.activetoolitem]?.stroke, fill: toolboxstate[boardstate.activetoolitem]?.fill, size: toolboxstate[boardstate.activetoolitem]?.size
+
+                    }
+
+                })
+            return
+        }
+        else if (boardstate.toolActionType === TOOL_ACTION_TYPES.ERASING) {
+            dispatchboardaction(
+                {
+                    type: BOARD_ACTIONS.ERASE,
+
+                    payload:
+                    {
+                        clientx, clienty, canvas
                     }
                 })
-            }
-       
+        }
+
     }
+     const boardundohandler =()=>
+        {
+            dispatchboardaction(
+                {
+                    type: BOARD_ACTIONS.UNDO
+                })
+        }
+    const boardredohandler =()=>
+        {
+              dispatchboardaction(
+                {
+                    type: BOARD_ACTIONS.REDO
+                })
+        }
     const boardmousuphandler = (event) => {
+        if (boardstate.toolActionType === TOOL_ACTION_TYPES.WRITING) return;
+        if (boardstate.toolActionType === TOOL_ACTION_TYPES.DRAWING) {
+            dispatchboardaction
+                (
+                    {
+                        type: BOARD_ACTIONS.DRAW_UP,
+                    }
+                )
+        }
         dispatchboardaction(
             {
-                type:BOARD_ACTIONS.CHANGE_ACTION_TYPE,
-                payload:{ 
-                toolActionType:TOOL_ACTION_TYPES.NONE
+                type: BOARD_ACTIONS.CHANGE_ACTION_TYPE,
+                payload: {
+                    toolActionType: TOOL_ACTION_TYPES.NONE
                 }
             })
 
     }
+
     const boardcontextvalue =
     {
         activetoolitem: boardstate.activetoolitem,
@@ -196,8 +255,9 @@ const BoardProvider = ({ children }) => {
         handalactive,
         boardmousDownhandaler,
         boardmousmovehandler,
-        boardmousuphandler
-
+        boardmousuphandler,
+        undo: boardundohandler,
+        redo: boardredohandler
     }
     return (
         <BoardContext.Provider value={boardcontextvalue}>{children} </BoardContext.Provider>

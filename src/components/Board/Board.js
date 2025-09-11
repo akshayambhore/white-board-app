@@ -2,12 +2,12 @@ import { useRef, useLayoutEffect, useEffect, useContext } from "react";
 import rough from "roughjs";
 import BoardContext from "../../store/board-context";
 import toolboxcontext from "../../store/toolbox-context";
-import TOOL_ITEMS from "../../constants";
+import TOOL_ITEMS, { TOOL_ACTION_TYPES } from "../../constants";
 
 
 function Board() {
     const canvasRef = useRef();
-    const { elements, boardmousDownhandaler, boardmousmovehandler, boardmousuphandler } = useContext(BoardContext);
+    const { elements, boardmousDownhandaler, boardmousmovehandler, boardmousuphandler,toolActionType } = useContext(BoardContext);
     const { toolboxstate } = useContext(toolboxcontext);
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -38,6 +38,9 @@ function Board() {
                     context.fill(element.path);
                    
                     break;
+                case TOOL_ITEMS.TEXT:
+                    console.log("dkfjhbgvnio");
+                    break;
                 default:
                     
                     throw new Error("Type not recog");
@@ -62,8 +65,19 @@ function Board() {
         boardmousuphandler();
     }
     return (
-        <canvas ref={canvasRef} onMouseDown={handalmousdown} onMouseMove={handalmousmove} onMouseUp={handalmousup} />
-    )
+        <>
+        { toolActionType === TOOL_ACTION_TYPES.WRITING&&<textarea
+        type="text"
+        style={{
+            top:elements[elements.length-1].y1,
+            left:elements[elements.lastIndexOf-1].x1,
+            fontSize:`${elements[elements.length-1]?.size}px`,
+            color:elements[elements.length-1]?.stroke,
+        }}
+        // onBlur={()=>textareablur(event.target.value)}
+        />}
+        <canvas ref={canvasRef} onMouseDown={handalmousdown} onMouseMove={handalmousmove} onMouseUp={handalmousup} /></> 
+        )
 
 }
 export default Board;
