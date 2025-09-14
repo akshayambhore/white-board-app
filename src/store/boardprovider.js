@@ -1,4 +1,4 @@
-import { useReducer } from "react";
+import { useCallback, useReducer } from "react";
 import BoardContext from "./board-context";
 import getStroke from "perfect-freehand";
 import { getSvgPathFromStroke } from "../utils/element";
@@ -214,20 +214,20 @@ const BoardProvider = ({ children }) => {
         }
 
     }
-     const boardundohandler =()=>
+     const boardundohandler =useCallback(()=>
         {
             dispatchboardaction(
                 {
                     type: BOARD_ACTIONS.UNDO
                 })
-        }
-    const boardredohandler =()=>
+        },[])
+    const boardredohandler =useCallback(()=>
         {
               dispatchboardaction(
                 {
                     type: BOARD_ACTIONS.REDO
                 })
-        }
+        },[])
     const boardmousuphandler = (event) => {
         if (boardstate.toolActionType === TOOL_ACTION_TYPES.WRITING) return;
         if (boardstate.toolActionType === TOOL_ACTION_TYPES.DRAWING) {
@@ -247,7 +247,7 @@ const BoardProvider = ({ children }) => {
             })
 
     }
-
+   
     const boardcontextvalue =
     {
         activetoolitem: boardstate.activetoolitem,
@@ -257,7 +257,8 @@ const BoardProvider = ({ children }) => {
         boardmousmovehandler,
         boardmousuphandler,
         undo: boardundohandler,
-        redo: boardredohandler
+        redo: boardredohandler,
+        
     }
     return (
         <BoardContext.Provider value={boardcontextvalue}>{children} </BoardContext.Provider>

@@ -1,12 +1,44 @@
+.maincontainer
+{
+   position: fixed;
+  top: 50%;
+  left: 5px;
+  transform: translateY(-50%);
+  border: solid black 1px;
+  border-radius: 10px;
+  padding: 10px;
+    background-color: aliceblue;
+  pointer-events: auto; /* So that it’s clickable */
+}
+.maincontainer:empty {
+  display: none;
+}
+.colores
+{
+    display: flex;
+    padding: 10px;
+    align-items: center;
+}
+
 .colore
 {
-    height: 10px;
-    width: 10px;
+    height: 15px;
+    width: 15px;
+   
 }
 .colore-a
 {
-    height: 20px;
-    width: 10px;
+    height: 15px;
+    width: 15px;
     border: solid black 2px;
     
+}
+.coolorPicker {
+  width: 30px;
+  height: 30px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 0;
+  cursor: pointer;
+  background: none;
 }

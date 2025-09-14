@@ -1,7 +1,17 @@
-.toolbar-container {
+.toolbar-container 
+{
+  
   display: flex;
   gap: 10px;
   padding: 10px;
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  justify-content: center;
+  border: solid black 1px;
+ border-radius: 10px;
+ background-color: aliceblue;
 }
 
 .toolItem {

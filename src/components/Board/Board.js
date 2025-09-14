@@ -7,7 +7,7 @@ import TOOL_ITEMS, { TOOL_ACTION_TYPES } from "../../constants";
 
 function Board() {
     const canvasRef = useRef();
-    const { elements, boardmousDownhandaler, boardmousmovehandler, boardmousuphandler,toolActionType } = useContext(BoardContext);
+    const { elements, boardmousDownhandaler, boardmousmovehandler, boardmousuphandler,toolActionType,undo,redo } = useContext(BoardContext);
     const { toolboxstate } = useContext(toolboxcontext);
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -15,6 +15,26 @@ function Board() {
         canvas.height = window.innerHeight;
 
     }, [])
+    useEffect (()=>
+        {
+            function handelkeydown(event)
+            {
+                if(event.ctrlKey&&event.key==="z")
+                    {
+                        undo();
+                    }
+                else if(event.ctrlKey&&event.key==="y")
+                    {
+                        redo();
+                    }
+            }
+
+            document.addEventListener("keydown",handelkeydown)
+            return ()=>{
+                document.removeEventListener("keydown" , handelkeydown)
+            }
+        },[undo,redo])
+
     useLayoutEffect(() => {
 
         const canvas = canvasRef.current;
@@ -76,7 +96,7 @@ function Board() {
         }}
         // onBlur={()=>textareablur(event.target.value)}
         />}
-        <canvas ref={canvasRef} onMouseDown={handalmousdown} onMouseMove={handalmousmove} onMouseUp={handalmousup} /></> 
+        <canvas id="canvas" ref={canvasRef} onMouseDown={handalmousdown} onMouseMove={handalmousmove} onMouseUp={handalmousup} /></> 
         )
 
 }
