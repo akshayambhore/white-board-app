@@ -11,7 +11,13 @@ const userRouter = require('./routers/userRouter');
 const { Socket } = require('dgram');
 const app = express();
 
-app.use(cors())
+app.use(cors({
+  origin: "http://localhost:3000",  // frontend URL
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],  // allow Authorization header
+  exposedHeaders: ["Authorization"],                  // important!
+  credentials: true
+}));
 ConectaToDatabase();
 
 app.use(express.json());
