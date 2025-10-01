@@ -43,7 +43,7 @@ const getUser = async (req,res) =>
             const token = jwt.sign({id:user._id,email:user.email},process.env.secratkey,{expiresIn:'1h'})
            
             res.setHeader('Authorization',`Bearer ${token}`)
-            res.status(200).json({email:user.email,name:user.name,massage:"login secsesfuly"});
+            res.status(200).json({token:token,email:user.email,name:user.name,massage:"login secsesfuly"});
 
         }
         catch (error)
