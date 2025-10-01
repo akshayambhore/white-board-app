@@ -16,7 +16,7 @@ const userRouter = require('./routers/userRouter');
 const canvasRouter = require("./routers/canvasRouter")
 const app = express();
 app.use(cors({
-  origin: "https://white-board-odz0evmy8-akshay-ambhores-projects.vercel.app/",  // frontend URL
+  origin: "https://white-board-phi-ten.vercel.app/",  // frontend URL
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],  // allow Authorization header
   exposedHeaders: ["Authorization"],                  // important!
