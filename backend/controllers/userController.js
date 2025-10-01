@@ -19,6 +19,18 @@ const addUser = async (req,res)=>
             res.status(400).json({eroor:error.message})
         }
     }
+const getProfile = async(req,res)=>
+    {
+        try
+        {
+            
+        }
+        catch
+        {
+
+        }
+    }
+
 const getUser = async (req,res) =>
     {
         try
@@ -40,9 +52,9 @@ const getUser = async (req,res) =>
                 }
                 
             
-            const token = jwt.sign({id:user._id,email:user.email},process.env.secratkey,{expiresIn:'1h'})
-           
-           
+            const token = jwt.sign({id:user._id,email:user.email,name:user.name},process.env.secratkey,{expiresIn:'1h'})
+            res.setHeader("Access-Control-Expose-Headers", "Authorization");
+            res.setHeader('Authorization',`Bearer ${token}`)
             res.status(200).json({token:token,email:user.email,name:user.name,massage:"login secsesfuly"});
 
         }
