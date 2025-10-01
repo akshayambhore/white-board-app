@@ -2,7 +2,8 @@ const jwt = require("jsonwebtoken")
 
 const protectrout=(req,res,next)=>
 {
-    const token = req.headers.authorization?.split(' ')[1];
+    const token = req.body.token;
+   
     if(!token)
         {
             return res.status(401).json({message:'Acsses denied not token provided'})
