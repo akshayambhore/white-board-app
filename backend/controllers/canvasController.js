@@ -43,6 +43,7 @@ exports.createCanvas = async (req, res) => {
         const newCanvas = new Canvas(
             {
                 owner: userId,
+                name:req.body.name,
                 shared: [],
                 elements: [],
             }
